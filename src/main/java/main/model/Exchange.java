@@ -22,14 +22,14 @@ public class Exchange {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "original", columnDefinition = "enum('USD', 'RUR', 'EUR')", nullable = false)
-    private Currency original;
+    private Currency source;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "target", columnDefinition = "enum('USD', 'RUR', 'EUR')", nullable = false)
     private Currency target;
 
     @Column(name = "amount_original", nullable = false)
-    private Long amountOriginal;
+    private Long amountSource;
 
     @Column(name = "amount_target", nullable = false)
     private Double amountTarget;

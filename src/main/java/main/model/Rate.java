@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExchangeRate {
+public class Rate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class ExchangeRate {
     @Column(nullable = false)
     private LocalDateTime date;
 
-    public ExchangeRate(Currency original, Currency target) {
+    public Rate(Currency original, Currency target) {
         this.original = original;
         this.target = target;
     }

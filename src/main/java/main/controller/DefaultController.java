@@ -33,9 +33,9 @@ public class DefaultController {
     public ResponseEntity<ExchangeResponse> exchange(
             @RequestParam("amount") Long amount,
             @RequestParam("user_id") Long userId,
-            @RequestParam("original") Currency original,
+            @RequestParam("source") Currency source,
             @RequestParam("target") Currency target) {
 
-        return ResponseEntity.ok(exchangeService.exchange(amount, original, target, userId));
+        return ResponseEntity.ok(exchangeService.exchange(amount, source, target, userId));
     }
 }
