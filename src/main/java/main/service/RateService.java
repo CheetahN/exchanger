@@ -1,9 +1,8 @@
 package main.service;
 
+import com.google.gson.Gson;
 import main.model.Currency;
 import main.model.Rate;
-import main.repository.RateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,47 +11,41 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.Instant;
 
 @Service
 public class RateService {
-    @Value("${currency.rate.cache.minutes}")
+    @Value("${currency.rate.cache.hours}")
     private Integer cacheTime;
     @Value("${fixer.access.key}")
     private String accessKey;
 
-
-    private final RateRepository rateRepository;
-
-    @Autowired
-    public RateService(RateRepository rateRepository) {
-        this.rateRepository = rateRepository;
-    }
+    private static Rate rates;
 
     public Double getRate(Currency source, Currency target) {
-        Optional<Rate> rate = rateRepository.findByOriginalAndTarget(source, target);
-        if (rate.isEmpty() || Duration.between(rate.get().getDate(), LocalDateTime.now()).toMinutes() > cacheTime) {
+        if (rates == null || Instant.now().getEpochSecond() - rates.getTimestamp() > (cacheTime * 3600)) {
             try {
                 updateRates();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
-            rate = rateRepository.findByOriginalAndTarget(source, target);
         }
-        return rate.orElseThrow(() -> new NullPointerException("rate request failed")).getRate();
+
+        return rates.getRates().get(target) / rates.getRates().get(source);
     }
 
     private void updateRates() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder(
                 URI.create("http://data.fixer.io/api/latest" +
                         "?access_key=" + accessKey +
-                        "&symbols=GBP,RUR,EUR,USD"))
+                        "&symbols=EUR,RUB,USD,GBP,JPY,CHF,CNY,TRY"))
                 .header("accept", "application/json")
                 .build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+
+        rates = new Gson().fromJson(
+                client.send(request, HttpResponse.BodyHandlers.ofString())
+                        .body(),
+                Rate.class);
     }
 }

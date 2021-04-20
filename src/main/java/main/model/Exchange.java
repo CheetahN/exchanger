@@ -21,11 +21,11 @@ public class Exchange {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "original", columnDefinition = "enum('USD', 'RUR', 'EUR')", nullable = false)
+    @Column(name = "original", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP')", nullable = false)
     private Currency source;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "target", columnDefinition = "enum('USD', 'RUR', 'EUR')", nullable = false)
+    @Column(name = "target", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP')", nullable = false)
     private Currency target;
 
     @Column(name = "amount_original", nullable = false)

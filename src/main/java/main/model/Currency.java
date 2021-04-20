@@ -2,6 +2,11 @@ package main.model;
 
 public enum Currency {
     EUR,
-    RUR,
-    USD
+    RUB,
+    USD,
+    GBP,
+    JPY,
+    CHF,
+    CNY,
+    TRY
 }
