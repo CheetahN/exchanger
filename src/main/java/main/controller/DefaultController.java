@@ -2,6 +2,7 @@ package main.controller;
 
 import lombok.extern.log4j.Log4j2;
 import main.api.response.ExchangeResponse;
+import main.api.response.ResultResponse;
 import main.model.Currency;
 import main.service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,25 @@ public class DefaultController {
             @RequestParam("user_id") Long userId,
             @RequestParam("source") Currency source,
             @RequestParam("target") Currency target) {
+
         log.info(String.format("User %s requested exchanging %s %s to %s", userId, amount, source, target));
         return ResponseEntity.ok(exchangeService.exchange(amount, source, target, userId));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStatistics(@RequestParam("mode") String mode,
+                                           @RequestParam(name = "amount", required = false) Long amount) {
+        ResultResponse resultResponse = null;
+        if ("popular".equals(mode)) {
+            log.info("most popular transactions requested");
+
+        } else  if ("over".equals(mode)) {
+            log.info("statistics for over the limit requested");
+            resultResponse = exchangeService.getOver(amount);
+        } else {
+            log.warn("incorrect statistics mode requested");
+            return ResponseEntity.ok(new ResultResponse("incorrect mode"));
+        }
+        return ResponseEntity.ok(resultResponse);
     }
 }

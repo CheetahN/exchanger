@@ -1,6 +1,7 @@
 package main.service;
 
 import com.google.gson.Gson;
+import lombok.extern.log4j.Log4j2;
 import main.model.Currency;
 import main.model.Rate;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.time.Instant;
 
 @Service
+@Log4j2
 public class RateService {
     @Value("${currency.rate.cache.hours}")
     private Integer cacheTime;
@@ -27,7 +29,8 @@ public class RateService {
             try {
                 updateRates();
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                log.error("Updating rates failed");
+                log.trace(e.toString());
             }
         }
 
@@ -35,6 +38,7 @@ public class RateService {
     }
 
     private void updateRates() throws IOException, InterruptedException {
+        log.info("Requesting rates update");
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(
                 URI.create("http://data.fixer.io/api/latest" +
@@ -42,10 +46,10 @@ public class RateService {
                         "&symbols=EUR,RUB,USD,GBP,JPY,CHF,CNY,TRY"))
                 .header("accept", "application/json")
                 .build();
-
         rates = new Gson().fromJson(
                 client.send(request, HttpResponse.BodyHandlers.ofString())
                         .body(),
                 Rate.class);
+        log.trace(String.format("Current rates: %s", rates));
     }
 }

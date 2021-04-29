@@ -8,6 +8,6 @@ import java.util.HashMap;
 public class Rate {
 
     private Currency base;
-    HashMap<Currency, Double> rates;
+    private HashMap<Currency, Double> rates;
     private Long timestamp;
 }
