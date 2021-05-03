@@ -31,24 +31,40 @@ public class ExchangeService {
                 .date(LocalDateTime.now())
                 .amountSource(amount)
                 .amountTarget(amount * rateService.getRate(source, target))
+                .amountUSD(amount * rateService.getRate(source, Currency.USD))
                 .source(source)
                 .target(target)
                 .userId(userId)
                 .build()
         );
-        log.trace(String.format("Writing operation %d", exchange.getId()));
+        log.trace(String.format("Writing transaction %d", exchange.getId()));
         return new ExchangeResponse(exchange.getId(), exchange.getAmountTarget());
     }
 
 
-    public ResultResponse getOver(Long amount) {
-        ResultResponse result;
-        List<Long> users = exchangeRepository.findOver(amount);
+    public ResultResponse getAmountOver(Long value) {
+        ResultResponse response;
+        List<Long> users = exchangeRepository.findOver(value.doubleValue());
         if (!users.isEmpty()) {
-            result = new ResultResponse("ok", users);
+            response = new ResultResponse("ok", users);
         } else {
-            result = new ResultResponse("such users not found");
+            response = new ResultResponse("users not found");
         }
-        return result;
+        return response;
+    }
+
+    public ResultResponse getPopularRequests() {
+        return null;
+    }
+
+    public ResultResponse getTotalAmountOver(Long value) {
+        ResultResponse response;
+        List<Long> users = exchangeRepository.findTotalOver(value.doubleValue());
+        if (!users.isEmpty()) {
+            response = new ResultResponse("ok", users);
+        } else {
+            response = new ResultResponse("users not found");
+        }
+        return response;
     }
 }

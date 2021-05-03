@@ -23,3 +23,10 @@ result: 225,66
 id - request ID
 result - amount in target currency
 
+statistics requests:
+curl "http://HOSTNAME:8081/stats?mode=over&value=1000"
+mode - type of statistics request, can be:
+    over - returns user_id list which requested more thatn $value USD
+    total - returns user_id list which summary requested more than $value USD
+    popular - returns ratings of exchange directions
+

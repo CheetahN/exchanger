@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
 
-    @Query(value = "select e.userId from #{#entityName} e where e.amountSource > :amount")
-    List<Long> findOver(Long amount);
+    @Query(value = "select e.userId from #{#entityName} e where e.amountUSD > :value")
+    List<Long> findOver(Double value);
+
+    @Query(value = "select e.userId from #{#entityName} e group by e.userId having sum(e.amountUSD) > :value")
+    List<Long> findTotalOver(Double value);
 }

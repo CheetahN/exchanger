@@ -21,11 +21,11 @@ public class Exchange {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "original", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP')", nullable = false)
+    @Column(name = "original", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP', 'JPY', 'CHF', 'CNY', 'TRY')", nullable = false)
     private Currency source;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "target", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP')", nullable = false)
+    @Column(name = "target", columnDefinition = "enum('USD', 'RUB', 'EUR', 'GBP', 'JPY', 'CHF', 'CNY', 'TRY')", nullable = false)
     private Currency target;
 
     @Column(name = "amount_original", nullable = false)
@@ -33,6 +33,9 @@ public class Exchange {
 
     @Column(name = "amount_target", nullable = false)
     private Double amountTarget;
+
+    @Column(name = "amount_usd", nullable = false)
+    private Double amountUSD;
 
     @Column(nullable = false)
     private LocalDateTime date;

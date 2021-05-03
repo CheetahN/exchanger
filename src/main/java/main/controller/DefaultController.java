@@ -6,7 +6,6 @@ import main.api.response.ResultResponse;
 import main.model.Currency;
 import main.service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @Log4j2
 public class DefaultController {
-    @Value("${spring.application.name}")
-    private String appName;
 
     private final ExchangeService exchangeService;
 
@@ -39,18 +36,24 @@ public class DefaultController {
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStatistics(@RequestParam("mode") String mode,
-                                           @RequestParam(name = "amount", required = false) Long amount) {
-        ResultResponse resultResponse = null;
-        if ("popular".equals(mode)) {
-            log.info("most popular transactions requested");
-
-        } else  if ("over".equals(mode)) {
-            log.info("statistics for over the limit requested");
-            resultResponse = exchangeService.getOver(amount);
-        } else {
-            log.warn("incorrect statistics mode requested");
-            return ResponseEntity.ok(new ResultResponse("incorrect mode"));
+                                           @RequestParam(name = "value", required = false) Long value) {
+        switch (mode) {
+            case "popular": {
+                log.info("most popular transactions requested");
+                return ResponseEntity.ok(exchangeService.getPopularRequests());
+            }
+            case "over": {
+                log.info("statistics for over the limit requested");
+                return ResponseEntity.ok(exchangeService.getAmountOver(value));
+            }
+            case "total": {
+                log.info("statistics for total over the limit requested");
+                return ResponseEntity.ok(exchangeService.getTotalAmountOver(value));
+            }
+            default: {
+                log.warn("incorrect statistics mode requested");
+                return ResponseEntity.ok(new ResultResponse("incorrect mode"));
+            }
         }
-        return ResponseEntity.ok(resultResponse);
     }
 }
