@@ -1,8 +1,10 @@
 package main.service;
 
 import lombok.extern.log4j.Log4j2;
+import main.api.response.DirectionResponse;
 import main.api.response.ExchangeResponse;
 import main.api.response.ResultResponse;
+import main.api.response.TopDirectionListResponse;
 import main.model.Currency;
 import main.model.Exchange;
 import main.repository.ExchangeRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -53,8 +56,13 @@ public class ExchangeService {
         return response;
     }
 
-    public ResultResponse getPopularRequests() {
-        return null;
+    public TopDirectionListResponse getPopularRequests() {
+        return new TopDirectionListResponse(
+                exchangeRepository.getTopDirections().stream().map( iExchangeCount -> DirectionResponse.builder()
+                .count(iExchangeCount.getCount())
+                .source(iExchangeCount.getSource())
+                .target(iExchangeCount.getTarget())
+                .build()).collect(Collectors.toList()));
     }
 
     public ResultResponse getTotalAmountOver(Long value) {
