@@ -26,7 +26,7 @@ result - amount in target currency
 statistics requests:
 curl "http://HOSTNAME:8081/stats?mode=over&value=1000"
 mode - type of statistics request, can be:
-    over - returns list of user's id which requested more thatn $value USD
+    over - returns list of user's id which requested more than $value USD
     total - returns list of user's id which summary requested more than $value USD
     popular - returns list with rating of exchange directions
         response: {
