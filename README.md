@@ -10,27 +10,27 @@ get free access key for Fixer API https://fixer.io/product
 
 # usage examples:
 Exchange request: 
-curl "http://HOSTNAME:8081/exchange?amount=200&source=EUR&target=USD&user_id=1"
-amount - amount of source currency
-source - source currency
-target - target currency
-user_id - ID of user
+curl "http://HOSTNAME:8081/exchange?amount=200&source=EUR&target=USD&user_id=1"  
+  amount - amount of source currency  
+	source - source currency  
+	target - target currency  
+	user_id - ID of user  
 
 response: { 
-id: 12
-result: 225,66
-}
+	id: 12
+	result: 225,66
+}  
 id - request ID
 result - amount in target currency
 
-statistics requests:
-curl "http://HOSTNAME:8081/stats?mode=over&value=1000"
-mode - type of statistics request, can be:
-    over - returns list of user's id which requested more than $value USD
-    total - returns list of user's id which summary requested more than $value USD
-    popular - returns list with rating of exchange directions
+statistics requests:  
+curl "http://HOSTNAME:8081/stats?mode=over&value=1000"  
+mode - type of statistics request, can be:  
+    over - returns list of user's id which requested more than $value USD  
+    total - returns list of user's id which summary requested more than $value USD  
+    popular - returns list with rating of exchange directions  
         response: {
-        source: USD
-        target: EUR
-        count: 299
-        }
+                source: USD
+                target: EUR
+                count: 299
+        }  
